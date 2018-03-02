@@ -6,7 +6,7 @@ public class LocationStatusReport {
 
     private int reportId;
     private int locationId;
-    private int agentId;
+    private String callSign;
     private byte status;
     private LocalDateTime reportTime;
     private String reportBody;
@@ -27,12 +27,12 @@ public class LocationStatusReport {
         this.locationId = locationId;
     }
 
-    public int getAgentId() {
-        return agentId;
+    public String getCallSign() {
+        return callSign;
     }
 
-    public void setAgentId(int agentId) {
-        this.agentId = agentId;
+    public void setCallSign(String callSign) {
+        this.callSign = callSign;
     }
 
     public byte getStatus() {

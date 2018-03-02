@@ -23,32 +23,26 @@ public class AgentsRoutes {
     public Agent createAgent(Request req, Response res) throws FailedRequestException {
         Agent agentModel = JsonRequestUtils.readBodyAsType(req, Agent.class);
 
-        if (agentModel.getAgentId() != 0) {
-            throw new FailedRequestException(ErrorCode.INVALID_INPUT, "agentId cannot be specified on create");
-        }
-
-        int newAgentId = agentsDao.addAgent(agentModel);
+        agentsDao.addAgent(agentModel);
 
         // Create requests should return 201
-        agentModel.setAgentId(newAgentId);
         res.status(201);
 
         return agentModel;
     }
 
     public Agent readAgent(Request req, Response res, int id) throws FailedRequestException {
-        return agentsDao.getAgent(id)
+        return agentsDao.getAgentByUserId(id)
                 .orElseThrow(() -> new FailedRequestException(ErrorCode.NOT_FOUND, "Agent not found"));
     }
 
     public Agent updateAgent(Request req, Response res, int id) throws FailedRequestException {
         Agent agent = JsonRequestUtils.readBodyAsType(req, Agent.class);
 
-        if (agent.getAgentId() != id && agent.getAgentId() != 0) {
-            throw new FailedRequestException(ErrorCode.INVALID_INPUT, "agentId cannot be specified differently to URI");
+        if (agent.getUserId() != id && agent.getUserId() != 0) {
+            throw new FailedRequestException(ErrorCode.INVALID_INPUT, "userId cannot be specified differently to URI");
         }
 
-        agent.setAgentId(id);
         agentsDao.updateAgent(agent);
 
         return agent;
@@ -60,7 +54,7 @@ public class AgentsRoutes {
         }
 
         // Do not do anything with output, if nothing to delete request is successfully done (no-op)
-        agentsDao.deleteAgent(id);
+        agentsDao.deleteAgentByUserId(id);
         res.status(204);
 
         return new Object();

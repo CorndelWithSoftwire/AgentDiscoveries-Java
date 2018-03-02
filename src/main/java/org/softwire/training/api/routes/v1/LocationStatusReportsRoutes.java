@@ -60,7 +60,7 @@ public class LocationStatusReportsRoutes {
 
     private LocationStatusReport validateApiModelThenMap(LocationStatusReportApiModel apiModel) throws FailedRequestException {
         // First check agent exists
-        if (!agentsDao.getAgent(apiModel.getAgentId()).isPresent()) {
+        if (!agentsDao.getAgent(apiModel.getCallSign()).isPresent()) {
             throw new FailedRequestException(ErrorCode.OPERATION_INVALID, "Agent does not exist");
         }
 
@@ -76,7 +76,7 @@ public class LocationStatusReportsRoutes {
                     .toLocalDateTime();
 
             LocationStatusReport model = new LocationStatusReport();
-            model.setAgentId(apiModel.getAgentId());
+            model.setCallSign(apiModel.getCallSign());
             model.setLocationId(apiModel.getLocationId());
             model.setStatus(apiModel.getStatus());
             model.setReportTime(dateTimeInReportLocation);
@@ -141,10 +141,11 @@ public class LocationStatusReportsRoutes {
         List<ApiReportSearchCriterion> apiReportSearchCriteria = new ArrayList<>();
 
         // All query parameters are optional and any combination can be specified
-        Optional.ofNullable(queryMap.get("agentId").integerValue())
-                .ifPresent(agentId -> apiReportSearchCriteria.add(new AgentIdApiSearchCriterion(agentId)));
+        Optional.ofNullable(queryMap.get("callSign").value())
+                .ifPresent(callSign -> apiReportSearchCriteria.add(new AgentCallSignAPISearchCriterion(callSign)));
         Optional.ofNullable(queryMap.get("locationId").integerValue())
                 .ifPresent(locationId -> apiReportSearchCriteria.add(new LocationIdApiSearchCriterion(locationId)));
+
 
         // fromTime / toTime specify the report should be made between those times taking into account time zones.
         // The reports are stored as a date time in the location timezone.
@@ -172,7 +173,7 @@ public class LocationStatusReportsRoutes {
         TimeZone locationTimeZone = TimeZone.getTimeZone(timeZone);
 
         apiModel.setReportId(model.getReportId());
-        apiModel.setAgentId(model.getAgentId());
+        apiModel.setCallSign(model.getCallSign());
         apiModel.setLocationId(model.getLocationId());
         apiModel.setStatus(model.getStatus());
         apiModel.setReportTime(model.getReportTime().atZone(locationTimeZone.toZoneId()));

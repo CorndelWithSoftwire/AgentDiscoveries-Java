@@ -4,19 +4,19 @@ import java.time.LocalDate;
 
 public class Agent {
 
-    private int agentId;
+    private int userId;
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
     private int rank;
     private String callSign;
 
-    public int getAgentId() {
-        return agentId;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setAgentId(int agentId) {
-        this.agentId = agentId;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getFirstName() {
