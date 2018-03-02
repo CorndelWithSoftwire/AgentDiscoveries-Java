@@ -57,7 +57,7 @@ public class LocationStatusReportsRoutes {
 
     private LocationStatusReport validateApiModelThenMap(LocationStatusReportApiModel apiModel) throws FailedRequestException {
         // First check agent exists
-        if (!agentsDao.getAgent(apiModel.getAgentId()).isPresent()) {
+        if (!agentsDao.getAgent(apiModel.getCallSign()).isPresent()) {
             throw new FailedRequestException(ErrorCode.OPERATION_INVALID, "Agent does not exist");
         }
 
@@ -73,7 +73,7 @@ public class LocationStatusReportsRoutes {
                     .toLocalDateTime();
 
             LocationStatusReport model = new LocationStatusReport();
-            model.setAgentId(apiModel.getAgentId());
+            model.setCallSign(apiModel.getCallSign());
             model.setLocationId(apiModel.getLocationId());
             model.setStatus(apiModel.getStatus());
             model.setReportTime(dateTimeInReportLocation);
@@ -99,7 +99,7 @@ public class LocationStatusReportsRoutes {
 
         TimeZone locationTimeZone = TimeZone.getTimeZone(location.get().getTimeZone());
 
-        apiModel.setAgentId(model.getAgentId());
+        apiModel.setCallSign(model.getCallSign());
         apiModel.setLocationId(model.getLocationId());
         apiModel.setStatus(model.getStatus());
         apiModel.setReportTime(model.getReportTime().atZone(locationTimeZone.toZoneId()));
@@ -124,7 +124,7 @@ public class LocationStatusReportsRoutes {
         QueryParamsMap queryMap = req.queryMap();
 
         // All query parameters are optional and any combination can be specified
-        Optional<Integer> agentId = Optional.ofNullable(queryMap.get("agentId").integerValue());
+        Optional<String> callSign = Optional.ofNullable(queryMap.get("callSign").value());
         Optional<Integer> locationId = Optional.ofNullable(queryMap.get("locationId").integerValue());
 
         // fromTime / toTime specify the report should be made between those times taking into account time zones.
